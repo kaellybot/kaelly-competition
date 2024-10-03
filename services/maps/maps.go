@@ -1,6 +1,8 @@
 package maps
 
 import (
+	"fmt"
+
 	amqp "github.com/kaellybot/kaelly-amqp"
 	"github.com/kaellybot/kaelly-competition/models/constants"
 	"github.com/rs/zerolog/log"
@@ -22,7 +24,7 @@ func (service *Impl) GetMapRequest(request *amqp.AlignGetBookRequest, correlatio
 	log.Info().Str(constants.LogCorrelationID, correlationID).
 		Msgf("Get competition map request received")
 
-	//TODO make it work
+	//TODO make it work (if 0 => random, else returns right map)
 
 	service.publishSucceededGetMapAnswer(correlationID, answersRoutingkey, lg)
 }
@@ -61,6 +63,10 @@ func (service *Impl) publishFailedGetMapAnswer(correlationID, answersRoutingkey 
 			Str(constants.LogCorrelationID, correlationID).
 			Msgf("Cannot publish via broker, request ignored")
 	}
+}
+
+func craftMapImageURL(mapType constants.MapType, number int) string {
+	return fmt.Sprintf(constants.KTArenaMapTemplateURL, mapType, number)
 }
 
 // TODO change proto type
