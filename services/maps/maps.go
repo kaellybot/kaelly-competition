@@ -48,9 +48,9 @@ func (service *Impl) publishSucceededGetMapAnswer(correlationID, answersRoutingk
 		Status:   amqp.RabbitMQMessage_SUCCESS,
 		Language: lg,
 		CompetitionMapAnswer: &amqp.CompetitionMapAnswer{
-			MapNumber:    mapNumber,
-			MapNormalURL: craftMapImageURL(constants.MapTypeNormal, mapNumber),
-			MapTacticURL: craftMapImageURL(constants.MapTypeTactical, mapNumber),
+			MapNumber:      mapNumber,
+			MapNormalURL:   craftMapImageURL(constants.MapTypeNormal, mapNumber),
+			MapTacticalURL: craftMapImageURL(constants.MapTypeTactical, mapNumber),
 			Source: &amqp.Source{
 				Name: source.Name,
 				Icon: source.Icon,
