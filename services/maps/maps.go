@@ -1,8 +1,9 @@
 package maps
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 
 	amqp "github.com/kaellybot/kaelly-amqp"
 	"github.com/kaellybot/kaelly-competition/models/constants"
@@ -27,7 +28,13 @@ func (service *Impl) GetMapRequest(request *amqp.CompetitionMapRequest, correlat
 
 	selectedMap := request.MapNumber
 	if selectedMap == 0 {
-		selectedMap = rand.Int63n(constants.MapCount) + 1
+		n, err := rand.Int(rand.Reader, big.NewInt(constants.MapCount))
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to randomize map number, returning failed answer")
+			service.publishFailedGetMapAnswer(correlationID, answersRoutingkey, lg)
+			return
+		}
+		selectedMap = n.Int64() + 1
 	}
 
 	service.publishSucceededGetMapAnswer(correlationID, answersRoutingkey, selectedMap, lg)
