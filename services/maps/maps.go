@@ -2,6 +2,7 @@ package maps
 
 import (
 	"fmt"
+	"math/rand"
 
 	amqp "github.com/kaellybot/kaelly-amqp"
 	"github.com/kaellybot/kaelly-competition/models/constants"
@@ -14,7 +15,7 @@ func New(broker amqp.MessageBroker) *Impl {
 	}
 }
 
-func (service *Impl) GetMapRequest(request *amqp.AlignGetBookRequest, correlationID,
+func (service *Impl) GetMapRequest(request *amqp.CompetitionMapRequest, correlationID,
 	answersRoutingkey string, lg amqp.Language) {
 	if !isValidGetMapRequest(request) {
 		service.publishFailedGetMapAnswer(correlationID, answersRoutingkey, lg)
@@ -24,19 +25,31 @@ func (service *Impl) GetMapRequest(request *amqp.AlignGetBookRequest, correlatio
 	log.Info().Str(constants.LogCorrelationID, correlationID).
 		Msgf("Get competition map request received")
 
-	//TODO make it work (if 0 => random, else returns right map)
+	selectedMap := request.MapNumber
+	if selectedMap == 0 {
+		selectedMap = rand.Int63n(constants.MapCount) + 1
+	}
 
-	service.publishSucceededGetMapAnswer(correlationID, answersRoutingkey, lg)
+	service.publishSucceededGetMapAnswer(correlationID, answersRoutingkey, selectedMap, lg)
 }
 
 func (service *Impl) publishSucceededGetMapAnswer(correlationID, answersRoutingkey string,
-	lg amqp.Language) {
+	mapNumber int64, lg amqp.Language) {
+	source := constants.GetMapSource()
 	message := amqp.RabbitMQMessage{
-		// TODO change proto type
-		Type:     amqp.RabbitMQMessage_ALIGN_GET_BOOK_ANSWER,
+		Type:     amqp.RabbitMQMessage_COMPETITION_MAP_ANSWER,
 		Status:   amqp.RabbitMQMessage_SUCCESS,
 		Language: lg,
-		// TODO set proto response
+		CompetitionMapAnswer: &amqp.CompetitionMapAnswer{
+			MapNumber:    mapNumber,
+			MapNormalURL: craftMapImageURL(constants.MapTypeNormal, mapNumber),
+			MapTacticURL: craftMapImageURL(constants.MapTypeTactical, mapNumber),
+			Source: &amqp.Source{
+				Name: source.Name,
+				Icon: source.Icon,
+				Url:  source.URL,
+			},
+		},
 	}
 
 	err := service.broker.Publish(&message, amqp.ExchangeAnswer, answersRoutingkey, correlationID)
@@ -50,8 +63,7 @@ func (service *Impl) publishSucceededGetMapAnswer(correlationID, answersRoutingk
 func (service *Impl) publishFailedGetMapAnswer(correlationID, answersRoutingkey string,
 	lg amqp.Language) {
 	message := amqp.RabbitMQMessage{
-		// TODO change proto type
-		Type:     amqp.RabbitMQMessage_ALIGN_GET_BOOK_ANSWER,
+		Type:     amqp.RabbitMQMessage_COMPETITION_MAP_ANSWER,
 		Status:   amqp.RabbitMQMessage_FAILED,
 		Language: lg,
 	}
@@ -65,11 +77,10 @@ func (service *Impl) publishFailedGetMapAnswer(correlationID, answersRoutingkey 
 	}
 }
 
-func craftMapImageURL(mapType constants.MapType, number int) string {
+func craftMapImageURL(mapType constants.MapType, number int64) string {
 	return fmt.Sprintf(constants.KTArenaMapTemplateURL, mapType, number)
 }
 
-// TODO change proto type
-func isValidGetMapRequest(request *amqp.AlignGetBookRequest) bool {
+func isValidGetMapRequest(request *amqp.CompetitionMapRequest) bool {
 	return request != nil
 }

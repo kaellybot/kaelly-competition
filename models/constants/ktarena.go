@@ -13,6 +13,8 @@ const (
 	MapTypeTactical MapType = "tactical"
 
 	KTArenaMapTemplateURL = "https://draft.ktarena.com/images/maps/1/%v/%v.webp"
+
+	MapCount = 50
 )
 
 func GetMapSource() Source {

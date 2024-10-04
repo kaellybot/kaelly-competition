@@ -5,8 +5,7 @@ import (
 )
 
 type Service interface {
-	// TODO change proto type
-	GetMapRequest(request *amqp.AlignGetBookRequest, correlationID,
+	GetMapRequest(request *amqp.CompetitionMapRequest, correlationID,
 		answersRoutingkey string, lg amqp.Language)
 }
 

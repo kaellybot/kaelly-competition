@@ -33,8 +33,8 @@ func (service *Impl) consume(_ context.Context,
 	message *amqp.RabbitMQMessage, correlationID string) {
 	//exhaustive:ignore Don't need to be exhaustive here since they will be handled by default case
 	switch message.Type {
-	case amqp.RabbitMQMessage_JOB_GET_BOOK_REQUEST: // TODO change
-		service.mapService.GetMapRequest(message.AlignGetBookRequest, correlationID, answersRoutingkey, message.Language)
+	case amqp.RabbitMQMessage_COMPETITION_MAP_REQUEST:
+		service.mapService.GetMapRequest(message.CompetitionMapRequest, correlationID, answersRoutingkey, message.Language)
 	default:
 		log.Warn().
 			Str(constants.LogCorrelationID, correlationID).

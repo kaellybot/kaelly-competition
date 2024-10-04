@@ -5,7 +5,7 @@ go 1.22
 // replace github.com/kaellybot/kaelly-amqp => ../kaelly-amqp
 
 require (
-	github.com/kaellybot/kaelly-amqp v0.0.4-beta3
+	github.com/kaellybot/kaelly-amqp v0.0.5-beta1
 	github.com/prometheus/client_golang v1.20.4
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0
