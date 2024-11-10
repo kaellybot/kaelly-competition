@@ -5,8 +5,8 @@ import (
 )
 
 type Service interface {
-	GetMapRequest(request *amqp.CompetitionMapRequest, correlationID,
-		answersRoutingkey string, lg amqp.Language)
+	GetMapRequest(ctx amqp.Context, request *amqp.CompetitionMapRequest,
+		lg amqp.Language)
 }
 
 type Impl struct {

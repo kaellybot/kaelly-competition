@@ -1,8 +1,6 @@
 package competitions
 
 import (
-	"context"
-
 	amqp "github.com/kaellybot/kaelly-amqp"
 	"github.com/kaellybot/kaelly-competition/models/constants"
 	"github.com/kaellybot/kaelly-competition/services/maps"
@@ -29,15 +27,14 @@ func (service *Impl) Consume() error {
 	return service.broker.Consume(requestQueueName, service.consume)
 }
 
-func (service *Impl) consume(_ context.Context,
-	message *amqp.RabbitMQMessage, correlationID string) {
+func (service *Impl) consume(ctx amqp.Context, message *amqp.RabbitMQMessage) {
 	//exhaustive:ignore Don't need to be exhaustive here since they will be handled by default case
 	switch message.Type {
 	case amqp.RabbitMQMessage_COMPETITION_MAP_REQUEST:
-		service.mapService.GetMapRequest(message.CompetitionMapRequest, correlationID, answersRoutingkey, message.Language)
+		service.mapService.GetMapRequest(ctx, message.CompetitionMapRequest, message.Language)
 	default:
 		log.Warn().
-			Str(constants.LogCorrelationID, correlationID).
+			Str(constants.LogCorrelationID, ctx.CorrelationID).
 			Msgf("Type not recognized, request ignored")
 	}
 }

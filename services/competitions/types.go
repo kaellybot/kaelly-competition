@@ -8,7 +8,6 @@ import (
 const (
 	requestQueueName   = "competitions-requests"
 	requestsRoutingkey = "requests.competitions"
-	answersRoutingkey  = "answers.competitions"
 )
 
 type Service interface {
