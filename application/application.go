@@ -11,11 +11,8 @@ import (
 
 func New() (*Impl, error) {
 	// misc
-	broker, err := amqp.New(constants.RabbitMQClientID, viper.GetString(constants.RabbitMQAddress),
-		[]amqp.Binding{competitions.GetBinding()})
-	if err != nil {
-		return nil, err
-	}
+	broker := amqp.New(constants.RabbitMQClientID, viper.GetString(constants.RabbitMQAddress),
+		amqp.WithBindings(competitions.GetBinding()))
 
 	// services
 	mapService := maps.New(broker)
@@ -28,7 +25,12 @@ func New() (*Impl, error) {
 }
 
 func (app *Impl) Run() error {
-	return app.competitionService.Consume()
+	if err := app.broker.Run(); err != nil {
+		return err
+	}
+
+	app.competitionService.Consume()
+	return nil
 }
 
 func (app *Impl) Shutdown() {

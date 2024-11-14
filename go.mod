@@ -5,7 +5,7 @@ go 1.22
 // replace github.com/kaellybot/kaelly-amqp => ../kaelly-amqp
 
 require (
-	github.com/kaellybot/kaelly-amqp v0.0.8-beta2
+	github.com/kaellybot/kaelly-amqp v0.0.9-beta2
 	github.com/prometheus/client_golang v1.20.4
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0
@@ -16,6 +16,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect

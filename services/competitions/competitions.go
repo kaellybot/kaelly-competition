@@ -22,9 +22,9 @@ func GetBinding() amqp.Binding {
 	}
 }
 
-func (service *Impl) Consume() error {
+func (service *Impl) Consume() {
 	log.Info().Msgf("Consuming competition requests...")
-	return service.broker.Consume(requestQueueName, service.consume)
+	service.broker.Consume(requestQueueName, service.consume)
 }
 
 func (service *Impl) consume(ctx amqp.Context, message *amqp.RabbitMQMessage) {
