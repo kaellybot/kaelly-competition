@@ -8,6 +8,9 @@ const (
 	// RabbitMQ address.
 	RabbitMQAddress = "RABBITMQ_ADDRESS"
 
+	// Probe port.
+	ProbePort = "PROBE_PORT"
+
 	// Metric port.
 	MetricPort = "METRIC_PORT"
 
@@ -18,6 +21,7 @@ const (
 	Production = "PRODUCTION"
 
 	defaultRabbitMQAddress = "amqp://localhost:5672"
+	defaultProbePort       = 9090
 	defaultMetricPort      = 2112
 	defaultLogLevel        = zerolog.InfoLevel
 	defaultProduction      = false
@@ -26,6 +30,7 @@ const (
 func GetDefaultConfigValues() map[string]any {
 	return map[string]any{
 		RabbitMQAddress: defaultRabbitMQAddress,
+		ProbePort:       defaultProbePort,
 		MetricPort:      defaultMetricPort,
 		LogLevel:        defaultLogLevel.String(),
 		Production:      defaultProduction,
