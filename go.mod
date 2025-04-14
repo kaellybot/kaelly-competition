@@ -9,6 +9,7 @@ require (
 	github.com/prometheus/client_golang v1.20.4
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250414032335-388684e50b26
 )
 
 require (
