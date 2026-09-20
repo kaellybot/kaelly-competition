@@ -5,8 +5,7 @@ import (
 )
 
 type Service interface {
-	GetMapRequest(ctx amqp.Context, request *amqp.CompetitionMapRequest,
-		lg amqp.Language)
+	GetMapRequest(ctx amqp.Context, message *amqp.RabbitMQMessage)
 }
 
 type Impl struct {

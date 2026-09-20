@@ -7,23 +7,21 @@ import (
 	"github.com/kaellybot/kaelly-competition/models/constants"
 )
 
-func MapGetMapAnswer(mapNumber int64, lg amqp.Language) *amqp.RabbitMQMessage {
+func MapGetMapAnswer(message *amqp.RabbitMQMessage, mapNumber int64) *amqp.RabbitMQMessage {
 	source := constants.GetMapSource()
-	return &amqp.RabbitMQMessage{
-		Type:     amqp.RabbitMQMessage_COMPETITION_MAP_ANSWER,
-		Status:   amqp.RabbitMQMessage_SUCCESS,
-		Language: lg,
-		CompetitionMapAnswer: &amqp.CompetitionMapAnswer{
-			MapNumber:      mapNumber,
-			MapNormalURL:   craftMapImageURL(constants.MapTypeNormal, mapNumber),
-			MapTacticalURL: craftMapImageURL(constants.MapTypeTactical, mapNumber),
-			Source: &amqp.Source{
-				Name: source.Name,
-				Icon: source.Icon,
-				Url:  source.URL,
-			},
+	answer := amqp.NewReply(message, amqp.RabbitMQMessage_COMPETITION_MAP_ANSWER,
+		amqp.RabbitMQMessage_SUCCESS)
+	answer.CompetitionMapAnswer = &amqp.CompetitionMapAnswer{
+		MapNumber:      mapNumber,
+		MapNormalURL:   craftMapImageURL(constants.MapTypeNormal, mapNumber),
+		MapTacticalURL: craftMapImageURL(constants.MapTypeTactical, mapNumber),
+		Source: &amqp.Source{
+			Name: source.Name,
+			Icon: source.Icon,
+			Url:  source.URL,
 		},
 	}
+	return answer
 }
 
 func craftMapImageURL(mapType constants.MapType, number int64) string {
